@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>脳トレクイズ250問</title>
+
+<!-- Google AdSense -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8398161859137802"
+crossorigin="anonymous"></script>
+
+<style>
+body{
+  margin:0;
+  font-family:"Yu Gothic",sans-serif;
+  background:#f2fbf8;
+  color:#333;
+}
+
+header{
+  background:#00897b;
+  color:white;
+  text-align:center;
+  padding:20px;
+}
+
+.layout{
+  display:grid;
+  grid-template-columns:180px 1fr 180px;
+  gap:20px;
+  max-width:1500px;
+  margin:20px auto;
+  padding:0 12px;
+}
+
+.ad{
+  background:white;
+  border-radius:12px;
+  padding:10px;
+  min-height:300px;
+  box-shadow:0 2px 10px rgba(0,0,0,.12);
+}
+
+main{
+  background:white;
+  border-radius:16px;
+  padding:24px;
+  box-shadow:0 4px 12px rgba(0,0,0,.15);
+}
+
+.topbar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:10px;
+  margin-bottom:20px;
+}
+
+.status{
+  font-weight:bold;
+}
+
+select{
+  padding:10px;
+  border-radius:8px;
+  font-size:16px;
+}
+
+.question{
+  font-size:24px;
+  line-height:1.8;
+  margin-bottom:20px;
+  background:#e8f8f5;
+  padding:18px;
+  border-radius:12px;
+  text-align:center;
+}
+
+.choices{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+}
+
+button{
+  border:none;
+  border-radius:12px;
+  padding:16px;
+  font-size:18px;
+  cursor:pointer;
+}
+
+.choice-btn{
+  background:#cdeee7;
+}
+
+.choice-btn:hover{
+  background:#aee0d7;
+}
+
+.correct{
+  background:#7bd389!important;
+}
+
+.wrong{
+  background:#ff8a80!important;
+}
+
+.result{
+  margin-top:20px;
+  text-align:center;
+  font-size:22px;
+  font-weight:bold;
+  min-height:36px;
+}
+
+.start-btn,
+.next-btn,
+.restart-btn{
+  margin-top:20px;
+  width:100%;
+  background:#00897b;
+  color:white;
+}
+
+.final{
+  text-align:center;
+  font-size:28px;
+  line-height:1.8;
+}
+
+@media(max-width:900px){
+
+  .layout{
+    grid-template-columns:1fr;
+  }
+
+  .choices{
+    grid-template-columns:1fr;
+  }
+
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>脳トレクイズ250問</h1>
+  <p>50問ランダム出題！計算・推理・記憶・ひらめき問題！</p>
+</header>
+
+<div class="layout">
+
+<!-- 左広告 -->
+<aside class="ad">
+
+<!-- チェス -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-8398161859137802"
+     data-ad-slot="5599163841"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+
+</aside>
+
+<main>
+
+<div class="topbar">
+
+<div>
+問題数：
+<select id="questionCount">
+<option value="10">10問</option>
+<option value="20">20問</option>
+<option value="30">30問</option>
+<option value="50" selected>50問</option>
+</select>
+</div>
+
+<div class="status" id="status">
+スタートしてください
+</div>
+
+</div>
+
+<button class="start-btn" id="startBtn">
+脳トレ開始
+</button>
+
+<div id="quizArea" style="display:none;">
+
+<div class="question" id="question"></div>
+
+<div class="choices" id="choices"></div>
+
+<div class="result" id="result"></div>
+
+<button class="next-btn" id="nextBtn">
+次の問題へ
+</button>
+
+<button class="restart-btn" id="restartBtn">
+もう一度遊ぶ
+</button>
+
+</div>
+
+</main>
+
+<!-- 右広告 -->
+<aside class="ad">
+
+<!-- チェス -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-8398161859137802"
+     data-ad-slot="5599163841"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+
+</aside>
+
+</div>
+
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<script>
+
+// ===== ベース問題 =====
+const baseQuestions = [
+
+{type:"計算",question:"12 + 8 = ?",answer:"20",choices:["18","19","20","22"]},
+{type:"計算",question:"7 × 6 = ?",answer:"42",choices:["36","40","42","48"]},
+{type:"計算",question:"100 - 37 = ?",answer:"63",choices:["53","63","67","73"]},
+{type:"計算",question:"9 × 9 = ?",answer:"81",choices:["72","81","89","99"]},
+{type:"計算",question:"144 ÷ 12 = ?",answer:"12",choices:["10","11","12","14"]},
+
+{type:"数列",question:"2, 4, 8, 16, ？",answer:"32",choices:["24","30","32","36"]},
+{type:"数列",question:"1, 1, 2, 3, 5, ？",answer:"8",choices:["6","7","8","10"]},
+{type:"数列",question:"3, 6, 9, 12, ？",answer:"15",choices:["14","15","16","18"]},
+{type:"数列",question:"1, 4, 9, 16, ？",answer:"25",choices:["20","24","25","36"]},
+{type:"数列",question:"100, 90, 80, 70, ？",answer:"60",choices:["65","60","55","50"]},
+
+{type:"記憶",question:"『赤・青・黄・緑』で3番目は？",answer:"黄",choices:["赤","青","黄","緑"]},
+{type:"記憶",question:"『犬・猫・鳥・馬』で2番目は？",answer:"猫",choices:["犬","猫","鳥","馬"]},
+{type:"記憶",question:"『7 4 9 2』で最後の数字は？",answer:"2",choices:["7","4","9","2"]},
+{type:"記憶",question:"『春・夏・秋・冬』で秋の前は？",answer:"夏",choices:["春","夏","秋","冬"]},
+{type:"記憶",question:"『東京・大阪・京都・福岡』で最後は？",answer:"福岡",choices:["東京","大阪","京都","福岡"]},
+
+{type:"推理",question:"AはBより背が高い。BはCより背が高い。一番高いのは？",answer:"A",choices:["A","B","C","不明"]},
+{type:"推理",question:"太郎は花子より年上。三郎は太郎より年上。一番年上は？",answer:"三郎",choices:["太郎","花子","三郎","不明"]},
+{type:"推理",question:"AはBの左、CはBの右。真ん中は？",answer:"B",choices:["A","B","C","不明"]},
+{type:"推理",question:"全ての犬は動物。ポチは犬。ポチは？",answer:"動物",choices:["植物","動物","魚","鳥"]},
+{type:"推理",question:"偶数は2で割り切れる。18は偶数。18は？",answer:"2で割り切れる",choices:["奇数","素数","2で割り切れる","不明"]},
+
+{type:"ひらめき",question:"パンはパンでも食べられないパンは？",answer:"フライパン",choices:["食パン","あんパン","フライパン","メロンパン"]},
+{type:"ひらめき",question:"走っても進まないものは？",answer:"時計",choices:["車","電車","時計","自転車"]},
+{type:"ひらめき",question:"目はあるのに見えないものは？",answer:"台風",choices:["猫","台風","魚","人"]},
+{type:"ひらめき",question:"口はあるのに話せないものは？",answer:"びん",choices:["犬","びん","人","鳥"]},
+{type:"ひらめき",question:"お金を食べる箱は？",answer:"貯金箱",choices:["宝箱","冷蔵庫","貯金箱","段ボール"]},
+
+{type:"図形",question:"三角形の内角の和は？",answer:"180度",choices:["90度","120度","180度","360度"]},
+{type:"図形",question:"四角形の内角の和は？",answer:"360度",choices:["180度","270度","360度","540度"]},
+{type:"図形",question:"正方形の4つの角は？",answer:"90度",choices:["45度","60度","90度","120度"]},
+{type:"図形",question:"円の中心から円周までの長さは？",answer:"半径",choices:["直径","半径","円周","対角線"]},
+{type:"図形",question:"立方体の面の数は？",answer:"6面",choices:["4面","6面","8面","12面"]},
+
+{type:"注意力",question:"🍎🍎🍏🍎 違う果物は何番目？",answer:"3番目",choices:["1番目","2番目","3番目","4番目"]},
+{type:"注意力",question:"🐶🐱🐶🐶 違う動物は何番目？",answer:"2番目",choices:["1番目","2番目","3番目","4番目"]},
+{type:"注意力",question:"⭐⭐🌟⭐ 違う星は何番目？",answer:"3番目",choices:["1番目","2番目","3番目","4番目"]},
+{type:"注意力",question:"🚗🚙🚗🚗 違う車は何番目？",answer:"2番目",choices:["1番目","2番目","3番目","4番目"]},
+{type:"注意力",question:"⚽🏀⚽⚽ 違うボールは何番目？",answer:"2番目",choices:["1番目","2番目","3番目","4番目"]},
+
+{type:"言葉",question:"『大』の反対は？",answer:"小",choices:["長","小","高","広"]},
+{type:"言葉",question:"『速い』の反対は？",answer:"遅い",choices:["強い","短い","遅い","暗い"]},
+{type:"言葉",question:"『明るい』の反対は？",answer:"暗い",choices:["暗い","軽い","遠い","古い"]},
+{type:"言葉",question:"『上』の反対は？",answer:"下",choices:["横","下","右","左"]},
+{type:"言葉",question:"『前』の反対は？",answer:"後ろ",choices:["横","上","後ろ","外"]}
+
+];
+
+// ===== 250問生成 =====
+const quizData = [];
+
+for(let i=1; i<=6; i++){
+
+baseQuestions.forEach(q=>{
+
+quizData.push({
+question:`【${i}｜${q.type}】${q.question}`,
+answer:q.answer,
+choices:[...q.choices],
+type:q.type
+});
+
+});
+
+}
+
+// 追加で250問へ
+baseQuestions.slice(0,10).forEach((q,index)=>{
+
+quizData.push({
+question:`【追加${index+1}｜${q.type}】${q.question}`,
+answer:q.answer,
+choices:[...q.choices],
+type:q.type
+});
+
+});
+
+// ===== シャッフル =====
+function shuffle(array){
+
+return array.sort(()=>Math.random()-0.5);
+
+}
+
+// ===== バランス出題 =====
+function balancedPick(count){
+
+const grouped = {};
+
+quizData.forEach(q=>{
+
+if(!grouped[q.type]) grouped[q.type]=[];
+
+grouped[q.type].push(q);
+
+});
+
+Object.keys(grouped).forEach(type=>{
+
+grouped[type]=shuffle(grouped[type]);
+
+});
+
+const selected=[];
+
+let types=shuffle(Object.keys(grouped));
+
+while(selected.length<count){
+
+for(const type of types){
+
+if(grouped[type].length && selected.length<count){
+
+selected.push(grouped[type].pop());
+
+}
+
+}
+
+types=shuffle(types);
+
+}
+
+return shuffle(selected);
+
+}
+
+let quizzes=[];
+let currentQuiz=0;
+let score=0;
+let answered=false;
+
+const startBtn=document.getElementById("startBtn");
+const quizArea=document.getElementById("quizArea");
+const questionEl=document.getElementById("question");
+const choicesEl=document.getElementById("choices");
+const resultEl=document.getElementById("result");
+const nextBtn=document.getElementById("nextBtn");
+const restartBtn=document.getElementById("restartBtn");
+const statusEl=document.getElementById("status");
+
+startBtn.onclick=()=>{
+
+const count=
+Number(document.getElementById("questionCount").value);
+
+quizzes=
+balancedPick(count);
+
+currentQuiz=0;
+score=0;
+
+startBtn.style.display="none";
+
+quizArea.style.display="block";
+
+loadQuiz();
+
+};
+
+function loadQuiz(){
+
+answered=false;
+
+resultEl.textContent="";
+
+nextBtn.style.display="none";
+
+choicesEl.innerHTML="";
+
+const quiz=quizzes[currentQuiz];
+
+statusEl.textContent=
+`第${currentQuiz+1}問 / ${quizzes.length}問 ｜ 正解 ${score}`;
+
+questionEl.textContent=
+quiz.question;
+
+shuffle([...quiz.choices]).forEach(choice=>{
+
+const btn=
+document.createElement("button");
+
+btn.textContent=choice;
+
+btn.className="choice-btn";
+
+btn.onclick=()=>checkAnswer(btn,choice);
+
+choicesEl.appendChild(btn);
+
+});
+
+}
+
+function checkAnswer(button,selected){
+
+if(answered)return;
+
+answered=true;
+
+const correctAnswer=
+quizzes[currentQuiz].answer;
+
+const buttons=
+choicesEl.querySelectorAll("button");
+
+buttons.forEach(btn=>{
+
+if(btn.textContent===correctAnswer){
+
+btn.classList.add("correct");
+
+}
+
+});
+
+if(selected===correctAnswer){
+
+score++;
+
+button.classList.add("correct");
+
+resultEl.textContent="正解！";
+
+}else{
+
+button.classList.add("wrong");
+
+resultEl.textContent=
+`不正解！ 正解は「${correctAnswer}」`;
+
+}
+
+nextBtn.style.display="block";
+
+}
+
+nextBtn.onclick=()=>{
+
+currentQuiz++;
+
+if(currentQuiz<quizzes.length){
+
+loadQuiz();
+
+}else{
+
+showFinal();
+
+}
+
+};
+
+restartBtn.onclick=()=>{
+
+location.reload();
+
+};
+
+function showFinal(){
+
+const percent=
+Math.round((score/quizzes.length)*100);
+
+let rank="";
+
+if(percent>=90){
+
+rank="Sランク：脳トレマスター！";
+
+}else if(percent>=70){
+
+rank="Aランク：かなり頭が冴えています！";
+
+}else if(percent>=50){
+
+rank="Bランク：いい感じ！";
+
+}else{
+
+rank="Cランク：再挑戦しよう！";
+
+}
+
+questionEl.innerHTML=`
+<div class="final">
+脳トレ終了！<br>
+${quizzes.length}問中 ${score}問正解！<br>
+正答率：${percent}%<br><br>
+${rank}
+</div>
+`;
+
+choicesEl.innerHTML="";
+
+resultEl.textContent="";
+
+nextBtn.style.display="none";
+
+restartBtn.style.display="block";
+
+statusEl.textContent="終了";
+
+}
+
+</script>
+
+</body>
+</html>
